@@ -1,1 +1,54 @@
-<p>calendar works!</p>
+<div style="padding: 20px">
+
+  <h2>Event Booking</h2>
+
+  <!-- Category Filter -->
+  <div style="margin-bottom: 15px">
+    <label>Filter Category:</label>
+    <select [(ngModel)]="selectedCategory" (change)="loadSlots()">
+      <option value="">All</option>
+      <option *ngFor="let cat of categories" [value]="cat.name">
+        {{ cat.name }}
+      </option>
+    </select>
+  </div>
+
+  <hr />
+
+  <!-- Slots List -->
+  <div *ngFor="let slot of slots"
+       style="margin-bottom: 10px; border: 1px solid #ccc; padding: 10px">
+
+    <!-- Category -->
+    <div>
+      <strong>{{ slot.category_name }}</strong>
+    </div>
+
+    <!-- Time -->
+    <div>
+      {{ slot.start_time }} → {{ slot.end_time }}
+    </div>
+
+    <!-- Actions -->
+    <div style="margin-top: 5px">
+
+      <!-- Book Button -->
+      <button *ngIf="!slot.is_booked" (click)="book(slot)">
+        Book
+      </button>
+
+      <!-- Cancel Button -->
+      <button *ngIf="slot.user_booked" (click)="cancel(slot)">
+        Cancel
+      </button>
+
+      <!-- Already Booked -->
+      <span *ngIf="slot.is_booked && !slot.user_booked">
+        Booked
+      </span>
+
+    </div>
+
+  </div>
+
+</div>
