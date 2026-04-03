@@ -18,6 +18,6 @@ import { CalendarComponent } from './calendar/calendar.component';
     CalendarComponent
   ],
   template: `<app-calendar></app-calendar>`,
-  styleUrl: './app.component.scss'
+  styleUrl: './app.component.css'
 })
 export class AppComponent { }

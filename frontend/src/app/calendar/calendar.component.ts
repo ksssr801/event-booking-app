@@ -4,6 +4,14 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
+// MATERIAL IMPORTS
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSelectModule } from '@angular/material/select';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatIconModule } from '@angular/material/icon';
+import { MatFormFieldModule } from '@angular/material/form-field';
+
 // We will create this next
 import { ApiService } from '../services/api.service';
 
@@ -12,9 +20,16 @@ import { ApiService } from '../services/api.service';
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule
+    FormsModule,
+    MatCardModule,
+    MatButtonModule,
+    MatSelectModule,
+    MatToolbarModule,
+    MatIconModule,
+    MatFormFieldModule
   ],
-  templateUrl: './calendar.component.html'
+  templateUrl: './calendar.component.html',
+  styleUrl: './calendar.component.css'
 })
 export class CalendarComponent implements OnInit {
 
@@ -34,11 +49,29 @@ export class CalendarComponent implements OnInit {
     this.loadSlots();
   }
 
-  // Set current week's Monday
+  // Set current week's Monday (start of the week)
   setCurrentWeek() {
     const today = new Date();
-    const monday = new Date(today.setDate(today.getDate() - today.getDay()));
+    const day = today.getDay();
+    const diff = today.getDate() - day + (day === 0 ? -6 : 1);
+    const monday = new Date(today.setDate(diff));
     this.weekStart = monday.toISOString().split('T')[0];
+  }
+
+  // Browse to Next Week
+  nextWeek() {
+    const date = new Date(this.weekStart);
+    date.setDate(date.getDate() + 7);
+    this.weekStart = date.toISOString().split('T')[0];
+    this.loadSlots();
+  }
+
+  // Browse to Previous Week
+  prevWeek() {
+    const date = new Date(this.weekStart);
+    date.setDate(date.getDate() - 7);
+    this.weekStart = date.toISOString().split('T')[0];
+    this.loadSlots();
   }
 
   // Fetch categories

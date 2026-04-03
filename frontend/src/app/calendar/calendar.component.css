@@ -1,0 +1,112 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  margin-bottom: 24px;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.nav-controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  .week-label {
+    font-size: 1.1rem;
+    font-weight: 500;
+  }
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px 32px;
+}
+
+.filters {
+  margin-bottom: 32px;
+  mat-form-field {
+    width: 300px;
+  }
+}
+
+.slots-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.slot-card {
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  border-radius: 12px;
+  background: white;
+  border: 1px solid #e2e8f0;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  }
+
+  &.booked {
+    opacity: 0.8;
+  }
+
+  mat-card-header {
+    margin-bottom: 16px;
+    .category-icon {
+      background-color: #f1f5f9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #64748b;
+    }
+    mat-card-title {
+      font-weight: 600;
+      color: #1e293b;
+    }
+    mat-card-subtitle {
+      color: #64748b;
+      margin-top: 4px;
+    }
+  }
+
+  mat-card-content {
+    .date-label {
+      font-size: 0.95rem;
+      color: #475569;
+      font-weight: 500;
+    }
+  }
+
+  mat-card-actions {
+    padding: 16px;
+    border-top: 1px solid #f1f5f9;
+  }
+}
+
+.status-label {
+  color: #94a3b8;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.no-data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 32px;
+  color: #94a3b8;
+  mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 16px;
+  }
+  p {
+    font-size: 1.1rem;
+  }
+}

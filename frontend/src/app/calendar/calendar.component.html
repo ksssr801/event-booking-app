@@ -1,54 +1,65 @@
-<div style="padding: 20px">
+<mat-toolbar color="primary" class="header">
+  <span>Event Booking System</span>
+  <span class="spacer"></span>
+  <div class="nav-controls">
+    <button mat-icon-button (click)="prevWeek()">
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+    <span class="week-label">Week of {{ weekStart }}</span>
+    <button mat-icon-button (click)="nextWeek()">
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+  </div>
+</mat-toolbar>
 
-  <h2>Event Booking</h2>
-
-  <!-- Category Filter -->
-  <div style="margin-bottom: 15px">
-    <label>Filter Category:</label>
-    <select [(ngModel)]="selectedCategory" (change)="loadSlots()">
-      <option value="">All</option>
-      <option *ngFor="let cat of categories" [value]="cat.name">
-        {{ cat.name }}
-      </option>
-    </select>
+<div class="container">
+  <div class="filters">
+    <mat-form-field appearance="outline">
+      <mat-label>Filter Category</mat-label>
+      <mat-select [(ngModel)]="selectedCategory" (selectionChange)="loadSlots()">
+        <mat-option value="">All Categories</mat-option>
+        <mat-option *ngFor="let cat of categories" [value]="cat.name">
+          {{ cat.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
   </div>
 
-  <hr />
+  <div class="slots-grid">
+    <mat-card *ngFor="let slot of slots" class="slot-card" [class.booked]="slot.is_booked">
+      <mat-card-header>
+        <div mat-card-avatar class="category-icon">
+          <mat-icon>{{ slot.category_name === 'Gym' ? 'fitness_center' : 'event' }}</mat-icon>
+        </div>
+        <mat-card-title>{{ slot.category_name }}</mat-card-title>
+        <mat-card-subtitle>{{ slot.start_time | date:'shortTime' }} - {{ slot.end_time | date:'shortTime' }}</mat-card-subtitle>
+      </mat-card-header>
 
-  <!-- Slots List -->
-  <div *ngFor="let slot of slots"
-       style="margin-bottom: 10px; border: 1px solid #ccc; padding: 10px">
+      <mat-card-content>
+        <p class="date-label">{{ slot.start_time | date:'EEEE, MMM d' }}</p>
+      </mat-card-content>
 
-    <!-- Category -->
-    <div>
-      <strong>{{ slot.category_name }}</strong>
-    </div>
+      <mat-card-actions align="end">
+        <!-- BOOK BUTTON -->
+        <button mat-raised-button color="accent" *ngIf="!slot.is_booked" (click)="book(slot)">
+          Book Now
+        </button>
 
-    <!-- Time -->
-    <div>
-      {{ slot.start_time }} → {{ slot.end_time }}
-    </div>
+        <!-- CANCEL BUTTON -->
+        <button mat-stroked-button color="warn" *ngIf="slot.user_booked" (click)="cancel(slot)">
+          Cancel Booking
+        </button>
 
-    <!-- Actions -->
-    <div style="margin-top: 5px">
-
-      <!-- Book Button -->
-      <button *ngIf="!slot.is_booked" (click)="book(slot)">
-        Book
-      </button>
-
-      <!-- Cancel Button -->
-      <button *ngIf="slot.user_booked" (click)="cancel(slot)">
-        Cancel
-      </button>
-
-      <!-- Already Booked -->
-      <span *ngIf="slot.is_booked && !slot.user_booked">
-        Booked
-      </span>
-
-    </div>
-
+        <!-- UNAVAILABLE STATUS -->
+        <span *ngIf="slot.is_booked && !slot.user_booked" class="status-label">
+          Fully Booked
+        </span>
+      </mat-card-actions>
+    </mat-card>
   </div>
 
+  <div *ngIf="slots.length === 0" class="no-data">
+    <mat-icon>event_busy</mat-icon>
+    <p>No event slots found for this week.</p>
+  </div>
 </div>
