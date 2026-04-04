@@ -4,6 +4,7 @@ from django.db import IntegrityError
 from django.utils.dateparse import parse_date
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from .models import Booking, Category, TimeSlot
@@ -16,12 +17,16 @@ CURRENT_USER_ID = 1
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    permission_classes = [AllowAny]
+    authentication_classes = []
 
 
 # TimeSlot ViewSet
 class TimeSlotViewSet(viewsets.ModelViewSet):
     queryset = TimeSlot.objects.select_related("category", "booking").all()
     serializer_class = TimeSlotSerializer
+    permission_classes = [AllowAny]
+    authentication_classes = []
 
     # LIST with time filter
     def list(self, request, *args, **kwargs):
