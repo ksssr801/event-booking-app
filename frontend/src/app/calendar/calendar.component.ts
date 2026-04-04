@@ -5,12 +5,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 // MATERIAL IMPORTS
-import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatIconModule } from '@angular/material/icon';
-import { MatFormFieldModule } from '@angular/material/form-field';
 
 // We will create this next
 import { ApiService } from '../services/api.service';
@@ -41,11 +41,13 @@ export class CalendarComponent implements OnInit {
   selectedCategory: string = '';
   weekStart: string = '';
 
-  constructor(private api: ApiService) {}
+  constructor(private api: ApiService) { }
 
   ngOnInit() {
     this.setCurrentWeek();
     this.loadCategories();
+    // Load from preference
+    this.selectedCategory = localStorage.getItem('user_pref_cat') || '';
     this.loadSlots();
   }
 
@@ -83,6 +85,9 @@ export class CalendarComponent implements OnInit {
 
   // Fetch timeslots
   loadSlots() {
+    // Save preference
+    localStorage.setItem('user_pref_cat', this.selectedCategory);
+
     this.api.getTimeSlots(this.weekStart, this.selectedCategory)
       .subscribe((res: any) => {
         this.slots = res;

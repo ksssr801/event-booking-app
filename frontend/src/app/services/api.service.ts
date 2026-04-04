@@ -35,4 +35,14 @@ export class ApiService {
   cancelSlot(id: number) {
     return this.http.delete(`${this.baseUrl}/timeslots/${id}/cancel/`);
   }
+
+  // Admin: Get all slots (no week filter)
+  getAdminSlots() {
+    return this.http.get(`${this.baseUrl}/timeslots/admin/`);
+  }
+
+  // Admin: Create new slot
+  createSlot(data: any) {
+    return this.http.post(`${this.baseUrl}/timeslots/`, data);
+  }
 }

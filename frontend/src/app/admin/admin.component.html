@@ -1,0 +1,87 @@
+<mat-toolbar color="primary">
+  <span>Admin - Manage Time Slots</span>
+</mat-toolbar>
+
+<div class="admin-container">
+  
+  <mat-card class="form-card">
+    <mat-card-header>
+      <mat-card-title>Create New Time Slot</mat-card-title>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <div class="form-fields">
+        <!-- Category -->
+        <mat-form-field appearance="outline">
+          <mat-label>Category</mat-label>
+          <mat-select [(ngModel)]="newSlot.category">
+            <mat-option *ngFor="let cat of categories" [value]="cat.id">
+              {{ cat.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Start Time -->
+        <mat-form-field appearance="outline">
+          <mat-label>Start Time</mat-label>
+          <input matInput type="datetime-local" [(ngModel)]="newSlot.start_time">
+        </mat-form-field>
+
+        <!-- End Time -->
+        <mat-form-field appearance="outline">
+          <mat-label>End Time</mat-label>
+          <input matInput type="datetime-local" [(ngModel)]="newSlot.end_time">
+        </mat-form-field>
+      </div>
+    </mat-card-content>
+
+    <mat-card-actions align="end">
+      <button mat-raised-button color="accent" (click)="createSlot()">
+        Add Slot
+      </button>
+    </mat-card-actions>
+  </mat-card>
+
+  <!-- Slots Table -->
+  <mat-card class="table-card">
+    <mat-card-header>
+      <mat-card-title>Existing Slots & Sign-ups</mat-card-title>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <table mat-table [dataSource]="slots" class="mat-elevation-z0">
+        
+        <!-- Category Column -->
+        <ng-container matColumnDef="category">
+          <th mat-header-cell *matHeaderCellDef> Category </th>
+          <td mat-cell *matCellDef="let element"> {{element.category_name}} </td>
+        </ng-container>
+
+        <!-- Time Column -->
+        <ng-container matColumnDef="time">
+          <th mat-header-cell *matHeaderCellDef> Time Range </th>
+          <td mat-cell *matCellDef="let element"> 
+            {{element.start_time | date:'MMM d, h:mm a'}} - {{element.end_time | date:'h:mm a'}}
+          </td>
+        </ng-container>
+
+        <!-- Status Column -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef> Status </th>
+          <td mat-cell *matCellDef="let element"> 
+            <span [style.color]="element.is_booked ? '#f44336' : '#4caf50'">
+              {{element.is_booked ? 'Signed Up' : 'Available'}}
+            </span>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+
+      <div *ngIf="slots.length === 0" class="no-data">
+        No slots created yet.
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
