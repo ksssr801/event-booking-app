@@ -10,6 +10,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { ApiService } from '../services/api.service';
 import { Category, TimeSlot, SlotCreateRequest } from '../models/event.models';
@@ -36,7 +37,6 @@ export class AdminComponent implements OnInit {
   categories: Category[] = [];
   slots: TimeSlot[] = [];
 
-  // Used for the creation form
   newSlot: SlotCreateRequest = {
     category: '',
     start_time: '',
@@ -45,47 +45,46 @@ export class AdminComponent implements OnInit {
 
   displayedColumns = ['category', 'time', 'status'];
 
-  constructor(private api: ApiService) {}
+  constructor(
+    private api: ApiService,
+    private snackBar: MatSnackBar
+  ) {}
 
   ngOnInit() {
-    console.log('Admin page loaded');
+    console.log('Admin Dashboard Loaded');
     this.loadCategories();
     this.loadAllSlots();
   }
 
-  // Fetch all available category options
   loadCategories() {
     this.api.getCategories().subscribe((res) => {
       this.categories = res;
     });
   }
 
-  // Load every slot for monitoring
   loadAllSlots() {
     this.api.getAdminSlots().subscribe((res) => {
       this.slots = res;
-      console.log('All slots for admin:', res);
     });
   }
 
-  // Perform slot creation
-  createSlot() {
+  createSlot(event: Event) {
+    if (event) event.preventDefault();
+
     if (!this.newSlot.category || !this.newSlot.start_time || !this.newSlot.end_time) {
-      alert('Please fill all values');
+      this.snackBar.open('Please fill all values', 'Close', { duration: 3000 });
       return;
     }
 
-    console.log('Sending slot data:', this.newSlot);
-
     this.api.createSlot(this.newSlot).subscribe({
       next: () => {
-        alert('Slot Added!');
+        this.snackBar.open('Slot Added Successfully!', 'Close', { duration: 3000 });
         this.loadAllSlots();
         this.newSlot = { category: '', start_time: '', end_time: '' };
       },
       error: (err) => {
-        console.error('Error adding slot:', err);
-        alert('Error adding slot');
+        console.error(err);
+        this.snackBar.open('Error: Could not add slot', 'Close', { duration: 3000 });
       }
     });
   }

@@ -1,71 +1,48 @@
-# Event Booking System
+# Event Booking System - Assessment Report
 
-A full-stack web application that allows users to book event time slots from a weekly calendar. Built with **Django (Backend)** and **Angular (Frontend)**, using **Angular Material** for a good UI.
+## Project Overview
+This is a full-stack event booking application developed as part of a technical assessment. The objective was to build a functional system for managing event time slots with a clear separation between User and Admin roles.
 
-## Features
-- **Weekly Calendar View**: Browse event slots scoping a 7-day week with Next/Previous navigation.
-- **Category Filtering**: Filter slots by interest (Yoga, Gym, etc.).
-- **User Booking**: One-click sign-up and cancellation for individual slots.
-- **Admin Dashboard**: Create new timeslots and monitor existing bookings across the system.
-- **User Preferences**: Remembers your category selection for future visits (LocalStorage).
-- **Concurrency Control**: Enforces a database-level "One booking per slot" constraint.
-
----
-
-## Tech Stack
-- **Backend**: Python, Django, Django REST Framework, UV.
-- **Frontend**: Angular 17+, Angular Material.
-- **Documentation**: Swagger/OpenAPI via `drf-spectacular`.
+## Key Features
+- **Weekly Calendar View**: A dynamic 7-day view with easy "Next/Prev" week navigation.
+- **Admin Dashboard**: A dedicated space to create new slots and monitor current sign-ups.
+- **Category Persistence**: Uses `localStorage` to remember a user's category preference across sessions.
+- **Stable Notifications**: Implemented `MatSnackBar` for a smooth, flicker-free user experience.
 
 ---
 
-## Setup Instructions
-
-### 1. Backend Setup (Django)
-1. Navigate to the `backend/` directory.
-2. Initialize environment and install dependencies:
-   ```bash
-   uv sync
-   ```
-3. Run migrations and seed data:
-   ```bash
-   uv run python manage.py migrate
-   uv run python manage.py shell <<EOF
-from events.models import Category
-Category.objects.get_or_create(name="Yoga")
-Category.objects.get_or_create(name="Gym")
-Category.objects.get_or_create(name="Conference")
-EOF
-   ```
-4. Start the server:
-   ```bash
-   uv run python manage.py runserver
-   ```
-   **API Docs:** [http://127.0.0.1:8000/api/docs/](http://127.0.0.1:8000/api/docs/)
-
-### 2. Frontend Setup (Angular)
-1. Navigate to the `frontend/` directory.
-2. Install dependencies:
-   ```bash
-   pnpm install
-   ```
-3. Start the dev server:
-   ```bash
-   pnpm start
-   ```
-4. Open your browser at: [http://localhost:4200](http://localhost:4200)
+## Technical Stack
+- **Backend**: Django & Django REST Framework (RESTful API).
+- **Frontend**: Angular 17+, Angular Material (UI/UX).
+- **Security**: Configured for cross-browser stability (Brave/Chrome) via CORS proxying.
 
 ---
 
-## Architecture Decisions
-- **OneToOneField**: Used for `Booking` to ensure a `TimeSlot` can only be linked to a single user without complex validation logic.
-- **Angular Standalone Components**: Modern Angular architecture for better performance and smaller bundle sizes.
-- **CORS Proxy**: Configured `proxy.conf.json` to route `/api` calls safely to the backend without complex CORS policy changes.
+## Challenges & Solutions
+
+### 1. Browser-Specific Logic (The Brave Challenge)
+**Issue**: Privacy-hardened browsers like Brave frequently blocked standard session cookies and triggered page refreshes during `alert()` calls.
+**Solution**: Switched from standard alerts to **Angular Material SnackBars** and implemented **`event.preventDefault()`** on all buttons. This stabilized the UI and ensured notifications stayed visible.
+
+### 2. Concurrency & Data Integrity
+**Issue**: Ensuring that a single time slot can only be booked by one person.
+**Solution**: Used a `OneToOneField` in the Django `Booking` model. This enforces a strict database-level constraint, ensuring that double-booking is impossible even at the API level.
+
+### 3. Navigation & State
+**Issue**: Direct URL entry (e.g., `/admin`) would reset the app to the default view.
+**Solution**: Implemented **Angular Routing**. This allows for stable URL-based navigation and ensures the app state is preserved when moving between the calendar and admin views.
 
 ---
 
-## Code Quality & Best Practices
-- **Type Safety**: Fully typed TypeScript interfaces in the frontend to prevent runtime errors and improve developer productivity.
-- **Efficient Queries**: Django's `select_related` used to avoid N+1 query problems in the timeslot APIs.
-- **Professional Documentation**: Codebases in both frontend and backend are documented using JSDoc and Docstrings for high readability.
-- **Centralized Error Handling**: Standardized pattern for catching and processing API errors across the frontend services.
+## Setup & Execution
+
+### Backend (Django)
+1. Navigate to `backend/`, run `uv sync` to install dependencies.
+2. Run `uv run python manage.py migrate`.
+3. Seed categories with `uv run python manage.py shell` (Yoga, Gym, etc.).
+4. Start with `uv run python manage.py runserver`.
+
+### Frontend (Angular)
+1. Navigate to `frontend/`, run `pnpm install`.
+2. Start the development server with `pnpm start`.
+3. Access at `http://localhost:4200`.

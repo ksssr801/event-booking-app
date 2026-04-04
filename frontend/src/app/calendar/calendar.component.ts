@@ -9,6 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { ApiService } from '../services/api.service';
 import { Category, TimeSlot } from '../models/event.models';
@@ -31,35 +32,32 @@ import { Category, TimeSlot } from '../models/event.models';
 })
 export class CalendarComponent implements OnInit {
 
-  // Event and Category data
   slots: TimeSlot[] = [];
   categories: Category[] = [];
 
-  // Weekly filters
   selectedCategory: string = '';
   weekStart: string = '';
 
-  constructor(private api: ApiService) { }
+  constructor(
+    private api: ApiService,
+    private snackBar: MatSnackBar
+  ) { }
 
   ngOnInit() {
     this.setCurrentWeek();
     this.loadCategories();
-    // Load preference from local storage
     this.selectedCategory = localStorage.getItem('user_pref_cat') || '';
     this.loadSlots();
   }
 
-  // Monday of the week (YYYY-MM-DD)
   setCurrentWeek() {
     const today = new Date();
     const day = today.getDay();
     const diff = today.getDate() - day + (day === 0 ? -6 : 1);
     const monday = new Date(today.setDate(diff));
     this.weekStart = monday.toISOString().split('T')[0];
-    console.log('Week starts at:', this.weekStart);
   }
 
-  // Browse to Next Week
   nextWeek() {
     const date = new Date(this.weekStart);
     date.setDate(date.getDate() + 7);
@@ -67,7 +65,6 @@ export class CalendarComponent implements OnInit {
     this.loadSlots();
   }
 
-  // Browse to Previous Week
   prevWeek() {
     const date = new Date(this.weekStart);
     date.setDate(date.getDate() - 7);
@@ -75,46 +72,45 @@ export class CalendarComponent implements OnInit {
     this.loadSlots();
   }
 
-  // Fetch available categories
   loadCategories() {
     this.api.getCategories().subscribe((res) => {
       this.categories = res;
     });
   }
 
-  // Fetch available slots
   loadSlots() {
     localStorage.setItem('user_pref_cat', this.selectedCategory);
     this.api.getTimeSlots(this.weekStart, this.selectedCategory).subscribe((res) => {
       this.slots = res;
-      console.log('Available slots:', res);
     });
   }
 
-  // Sign up for slot
-  book(slot: TimeSlot) {
+  book(event: Event, slot: TimeSlot) {
+    if (event) event.preventDefault();
+
     this.api.bookSlot(slot.id).subscribe({
       next: () => {
-        alert('Successfully Booked!');
+        this.snackBar.open('Successfully Booked!', 'Close', { duration: 3000 });
         this.loadSlots();
       },
       error: (err) => {
-        console.error('Booking failed:', err);
-        alert('Booking failed');
+        console.error(err);
+        this.snackBar.open('Error: Booking failed', 'Close', { duration: 3000 });
       }
     });
   }
 
-  // Unsubscribe from slot
-  cancel(slot: TimeSlot) {
+  cancel(event: Event, slot: TimeSlot) {
+    if (event) event.preventDefault();
+
     this.api.cancelSlot(slot.id).subscribe({
       next: () => {
-        alert('Booking Cancelled!');
+        this.snackBar.open('Booking Cancelled!', 'Close', { duration: 3000 });
         this.loadSlots();
       },
       error: (err) => {
-        console.error('Cancel failed:', err);
-        alert('Cancel failed');
+        console.error(err);
+        this.snackBar.open('Error: Unsubscribe failed', 'Close', { duration: 3000 });
       }
     });
   }

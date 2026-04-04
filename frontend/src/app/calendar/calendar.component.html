@@ -41,12 +41,12 @@
 
       <mat-card-actions align="end">
         <!-- BOOK BUTTON -->
-        <button type="button" mat-raised-button color="accent" *ngIf="!slot.is_booked" (click)="book(slot)">
+        <button type="button" mat-raised-button color="accent" *ngIf="!slot.is_booked" (click)="book($event, slot)">
           Book Now
         </button>
 
         <!-- CANCEL BUTTON -->
-        <button type="button" mat-stroked-button color="warn" *ngIf="slot.user_booked" (click)="cancel(slot)">
+        <button type="button" mat-stroked-button color="warn" *ngIf="slot.user_booked" (click)="cancel($event, slot)">
           Cancel Booking
         </button>
 
