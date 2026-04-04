@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+
+// Material
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
@@ -8,7 +10,9 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatFormFieldModule } from '@angular/material/form-field';
+
 import { ApiService } from '../services/api.service';
+import { Category, TimeSlot, SlotCreateRequest } from '../models/event.models';
 
 @Component({
   selector: 'app-admin',
@@ -29,11 +33,11 @@ import { ApiService } from '../services/api.service';
 })
 export class AdminComponent implements OnInit {
 
-  categories: any[] = [];
-  slots: any[] = [];
+  categories: Category[] = [];
+  slots: TimeSlot[] = [];
 
-  // Form Model
-  newSlot = {
+  // Used for the creation form
+  newSlot: SlotCreateRequest = {
     category: '',
     start_time: '',
     end_time: ''
@@ -44,28 +48,45 @@ export class AdminComponent implements OnInit {
   constructor(private api: ApiService) {}
 
   ngOnInit() {
+    console.log('Admin page loaded');
     this.loadCategories();
     this.loadAllSlots();
   }
 
+  // Fetch all available category options
   loadCategories() {
-    this.api.getCategories().subscribe((res: any) => this.categories = res);
+    this.api.getCategories().subscribe((res) => {
+      this.categories = res;
+    });
   }
 
+  // Load every slot for monitoring
   loadAllSlots() {
-    // We'll use the .admin action we created in the backend
-    this.api.getAdminSlots().subscribe((res: any) => this.slots = res);
+    this.api.getAdminSlots().subscribe((res) => {
+      this.slots = res;
+      console.log('All slots for admin:', res);
+    });
   }
 
+  // Perform slot creation
   createSlot() {
     if (!this.newSlot.category || !this.newSlot.start_time || !this.newSlot.end_time) {
-      alert('Please fill all fields');
+      alert('Please fill all values');
       return;
     }
 
-    this.api.createSlot(this.newSlot).subscribe(() => {
-      this.loadAllSlots();
-      this.newSlot = { category: '', start_time: '', end_time: '' }; // Clear
+    console.log('Sending slot data:', this.newSlot);
+
+    this.api.createSlot(this.newSlot).subscribe({
+      next: () => {
+        alert('Slot Added!');
+        this.loadAllSlots();
+        this.newSlot = { category: '', start_time: '', end_time: '' };
+      },
+      error: (err) => {
+        console.error('Error adding slot:', err);
+        alert('Error adding slot');
+      }
     });
   }
 }

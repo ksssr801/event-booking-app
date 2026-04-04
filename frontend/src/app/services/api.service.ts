@@ -1,48 +1,46 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Category, TimeSlot, SlotCreateRequest } from '../models/event.models';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
 
-  baseUrl = '/api';
+  private baseUrl = '/api';
 
   constructor(private http: HttpClient) {}
 
-  // Get categories
-  getCategories() {
-    return this.http.get(`${this.baseUrl}/categories/`);
+  // Get categories from backend
+  getCategories(): Observable<Category[]> {
+    return this.http.get<Category[]>(`${this.baseUrl}/categories/`);
   }
 
-  // Get timeslots (with filters)
-  getTimeSlots(weekStart: string, category?: string) {
+  // Get timeslots (with filtering)
+  getTimeSlots(weekStart: string, category?: string): Observable<TimeSlot[]> {
     let url = `${this.baseUrl}/timeslots/?week_start=${weekStart}`;
-
     if (category) {
       url += `&category=${category}`;
     }
-
-    return this.http.get(url);
+    return this.http.get<TimeSlot[]>(url);
   }
 
-  // Book slot
-  bookSlot(id: number) {
+  // Booking functions
+  bookSlot(id: number): Observable<any> {
     return this.http.post(`${this.baseUrl}/timeslots/${id}/book/`, {});
   }
 
-  // Cancel booking
-  cancelSlot(id: number) {
+  cancelSlot(id: number): Observable<any> {
     return this.http.delete(`${this.baseUrl}/timeslots/${id}/cancel/`);
   }
 
-  // Admin: Get all slots (no week filter)
-  getAdminSlots() {
-    return this.http.get(`${this.baseUrl}/timeslots/admin/`);
+  // Admin dashboard methods
+  getAdminSlots(): Observable<TimeSlot[]> {
+    return this.http.get<TimeSlot[]>(`${this.baseUrl}/timeslots/admin/`);
   }
 
-  // Admin: Create new slot
-  createSlot(data: any) {
-    return this.http.post(`${this.baseUrl}/timeslots/`, data);
+  createSlot(data: SlotCreateRequest): Observable<TimeSlot> {
+    return this.http.post<TimeSlot>(`${this.baseUrl}/timeslots/`, data);
   }
 }

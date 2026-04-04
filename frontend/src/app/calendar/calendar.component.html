@@ -2,11 +2,11 @@
   <span>Event Booking System</span>
   <span class="spacer"></span>
   <div class="nav-controls">
-    <button mat-icon-button (click)="prevWeek()">
+    <button type="button" mat-icon-button (click)="prevWeek()">
       <mat-icon>chevron_left</mat-icon>
     </button>
     <span class="week-label">Week of {{ weekStart }}</span>
-    <button mat-icon-button (click)="nextWeek()">
+    <button type="button" mat-icon-button (click)="nextWeek()">
       <mat-icon>chevron_right</mat-icon>
     </button>
   </div>
@@ -41,12 +41,12 @@
 
       <mat-card-actions align="end">
         <!-- BOOK BUTTON -->
-        <button mat-raised-button color="accent" *ngIf="!slot.is_booked" (click)="book(slot)">
+        <button type="button" mat-raised-button color="accent" *ngIf="!slot.is_booked" (click)="book(slot)">
           Book Now
         </button>
 
         <!-- CANCEL BUTTON -->
-        <button mat-stroked-button color="warn" *ngIf="slot.user_booked" (click)="cancel(slot)">
+        <button type="button" mat-stroked-button color="warn" *ngIf="slot.user_booked" (click)="cancel(slot)">
           Cancel Booking
         </button>
 

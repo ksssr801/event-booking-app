@@ -9,7 +9,6 @@ A full-stack web application that allows users to book event time slots from a w
 - **Admin Dashboard**: Create new timeslots and monitor existing bookings across the system.
 - **User Preferences**: Remembers your category selection for future visits (LocalStorage).
 - **Concurrency Control**: Enforces a database-level "One booking per slot" constraint.
-- **Brave Browser Ready**: Configured for compatibility with privacy-hardened browsers.
 
 ---
 
@@ -62,3 +61,11 @@ EOF
 - **OneToOneField**: Used for `Booking` to ensure a `TimeSlot` can only be linked to a single user without complex validation logic.
 - **Angular Standalone Components**: Modern Angular architecture for better performance and smaller bundle sizes.
 - **CORS Proxy**: Configured `proxy.conf.json` to route `/api` calls safely to the backend without complex CORS policy changes.
+
+---
+
+## Code Quality & Best Practices
+- **Type Safety**: Fully typed TypeScript interfaces in the frontend to prevent runtime errors and improve developer productivity.
+- **Efficient Queries**: Django's `select_related` used to avoid N+1 query problems in the timeslot APIs.
+- **Professional Documentation**: Codebases in both frontend and backend are documented using JSDoc and Docstrings for high readability.
+- **Centralized Error Handling**: Standardized pattern for catching and processing API errors across the frontend services.
